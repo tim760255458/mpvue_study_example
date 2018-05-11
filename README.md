@@ -1,6 +1,8 @@
 # wuancake_xcx
 
-> A Mpvue project
+> 使用 mpvue 开发小程序的基本示例，用于对 mpvue 开发小程序有大体了解，并对前端项目的必要过程作示例说明。还在完善中...
+
+clone 后运行 npm run dev 即可。
 
 ## Build Setup
 
