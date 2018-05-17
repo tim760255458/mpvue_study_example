@@ -28,12 +28,17 @@
         <p><span class="card-main-span">main.js</span> 作用是运行时创建页面（个人理解）</p>
       </div>
     </div>
-    <div class="card-example default-card">
-      <p class="card-header">使用表单的例子（还未做）</p>
+    <div class="card-example default-card input-example">
+      <p class="card-header">使用表单的例子（提交后改变 store 中的状态，并将新的状态保存到 storage 中。utils -> storage.js 封装了相应的方法）</p>
       <div class="card-main">
-        <input class="input-item" type="email" v-model="name" placeholder="输入邮箱..." />
+        <input class="input-item" type="email" v-model="email" placeholder="输入邮箱..." />
         <input class="input-item" type="password" v-model="password" placeholder="输入密码..." />
       </div>
+      <div class="input-example-btns">
+        <button @click="submit">提交</button>
+        <button @click="check">检验</button>
+      </div>
+      <p v-if="isCheck">email: {{ checkData.email }}, password: {{ checkData.password }}</p>
     </div>
     <div class="vuex-box card-example default-card">
       <p class="card-header">使用 vuex 的例子，点击按钮从 store 获取 testmessage 的值。具体使用看代码</p>
@@ -76,20 +81,30 @@
 
 <script>
 import card from '@/components/card'
+import { mapState, mapMutations } from 'vuex'
+import { getStorage } from '../../utils/storage.js'
 
 export default {
   data () {
     return {
       motto: 'Hello World',
       userInfo: {},
-      name: null,
+      email: null,
       password: null,
-      message: null
+      message: null,
+      checkData: {},
+      isCheck: false
     }
   },
 
   components: {
     card
+  },
+
+  computed: {
+    ...mapState([
+      'user_info'
+    ])
   },
 
   methods: {
@@ -121,7 +136,28 @@ export default {
       wx.navigateTo({
         url: '../logs/main'
       })
-    }
+    },
+    submit () {
+      const params = {
+        email: this.email,
+        password: this.password
+      }
+      console.log(params)
+      this.setUserInfo(params)
+    },
+    check () {
+      const val = getStorage('user_info')
+      console.log(val)
+      if (val) {
+        this.checkData = val
+      } else {
+        this.checkData = '未检出数据'
+      }
+      this.isCheck = true
+    },
+    ...mapMutations({
+      setUserInfo: 'SET_USER_INFO'
+    })
   },
 
   created () {
@@ -214,5 +250,15 @@ export default {
 }
 .card-main-warning {
   color: crimson;
+}
+.input-example {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.input-example-btns {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
 }
 </style>
