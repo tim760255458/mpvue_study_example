@@ -176,9 +176,9 @@ export default {
         this.listData = res.data.results
         wx.hideLoading()
       })
-      setTimeout(function(){
+      setTimeout(function () {
         wx.hideLoading()
-      },2000)
+      }, 2000)
     },
     ...mapMutations({
       setUserInfo: 'SET_USER_INFO'
