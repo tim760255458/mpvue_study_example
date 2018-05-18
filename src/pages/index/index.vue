@@ -64,6 +64,16 @@
       </div>
       <p class="card-header">注意：在使用 mpvue 开发时，新创建一个页面后需要再次运行 npm run dev 才能使页面生效。</p>
     </div>
+    <div class="default-card card-example">
+      <p class="card-header">请求示例（封装微信请求 api 为 promise 形式。）</p>
+      <div class="card-main">
+        <p>去http://gank.io/api/data/Android/10/1请求数据</p>
+        <button @click="query">发起请求</button>
+        <ul>
+          <li class="list-item" v-for="(item, index) of listData" :key="index">{{ item.desc }} - {{ item.who }}</li>
+        </ul>
+      </div>
+    </div>
 
     <div class="usermotto">
       <div class="user-motto">
@@ -83,6 +93,7 @@
 import card from '@/components/card'
 import { mapState, mapMutations } from 'vuex'
 import { getStorage } from '../../utils/storage.js'
+import { getList } from '../../api'
 
 export default {
   data () {
@@ -93,7 +104,8 @@ export default {
       password: null,
       message: null,
       checkData: {},
-      isCheck: false
+      isCheck: false,
+      listData: []
     }
   },
 
@@ -154,6 +166,19 @@ export default {
         this.checkData = '未检出数据'
       }
       this.isCheck = true
+    },
+    query () {
+      wx.showLoading({
+        title: 'Loading...',
+        mask: true
+      })
+      getList().then(res => {
+        this.listData = res.data.results
+        wx.hideLoading()
+      })
+      setTimeout(function(){
+        wx.hideLoading()
+      },2000)
     },
     ...mapMutations({
       setUserInfo: 'SET_USER_INFO'
@@ -260,5 +285,11 @@ export default {
   width: 100%;
   display: flex;
   justify-content: space-around;
+}
+.list-item {
+  color: cadetblue;
+  box-shadow: 0 0 4px #ddd;
+  margin: 10px 0;
+  padding: 5px;
 }
 </style>
